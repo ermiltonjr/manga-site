@@ -32,7 +32,7 @@ app.get('/manga/:slug', async (c) => {
   return c.html(
     <Layout titulo={manga.title}>
       <h1>{manga.title}</h1>
-      <ul>{chapters.map((ch) => <li><a href={`/manga/${slug}/ler/${ch.cap}`}>{`Capitulo ${ch.cap}`}</a></li>)}</ul>
+      <ul>{chapters.map((ch) => <li><a href={`/manga/${slug}/ler/${ch.cap}`}>{`Capítulo ${ch.cap}`}</a></li>)}</ul>
     </Layout>
   )
 })
