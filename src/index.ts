@@ -7,18 +7,21 @@ app.get('/', (c) => {
 })
 
 app.get('/api/mangas', async (c) => {
-  const result = await c.env.DB.prepare('SELECT * FROM mangas ORDER by title').all()
+  const result = (await c.env.DB.prepare('SELECT * FROM mangas ORDER by title').all()).results
   return c.json(result)
 })
 
 app.get('/api/mangas/:slug', async (c) => {
-  const nome = c.req.param('slug')
-  const manga = await c.env.DB.prepare('SELECT * FROM mangas where title = ?').bind(nome).first()
+  const slug = c.req.param('slug')
+  const manga = await c.env.DB.prepare('SELECT * FROM mangas where slug = ?').bind(slug).first()
   if (!manga){
-    return c.json({erro: 'Tarefa nao encontrada'}, 404)
+    return c.json({erro: 'Manga nao encontrada'}, 404)
   }
-  const chapters = await c.env.DB.prepare('SELECT * from chapters where manga_id = ? ORDER BY cap DESC').bind(manga.id).all()
-  return c.json(manga), c.json(chapters)
+  const chapters = (await c.env.DB.prepare('SELECT * from chapters where manga_id = ? ORDER BY cap DESC').bind(manga.id).all()).results
+  return c.json({
+    "manga": {"id":manga.id, "slug":manga.slug, "title":manga.title},
+    "chapters": {chapters}
+  })
 })
 
 export default app
