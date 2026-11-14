@@ -26,31 +26,15 @@ app.get('/manga/:slug', async (c) => {
   if (!manga){
     return c.html(
       <Layout titulo='Manga nao encontrado'><h1>Erro 404</h1></Layout>
-    )
+    , 404)
   }
   const chapters = (await c.env.DB.prepare('SELECT * from chapters where manga_id = ? ORDER BY cap DESC').bind(manga.id).all()).results
   return c.html(
     <Layout titulo={manga.title}>
       <h1>{manga.title}</h1>
-      <ul>{chapters.map((c) => <li><a href={`/manga/${slug}/ler/${c.cap}`}>{c.cap}</a></li>)}</ul>
+      <ul>{chapters.map((ch) => <li><a href={`/manga/${slug}/ler/${ch.cap}`}>{`Capitulo ${ch.cap}`}</a></li>)}</ul>
     </Layout>
   )
-})
-
-
-app.get('/api/mangas', async (c) => {
-  const result = (await c.env.DB.prepare('SELECT * FROM mangas ORDER by title').all()).results
-  return c.json(result)
-})
-
-app.get('/api/mangas/:slug', async (c) => {
-  const slug = c.req.param('slug')
-  const manga = await c.env.DB.prepare('SELECT * FROM mangas where slug = ?').bind(slug).first()
-  if (!manga){
-    return c.json({erro: 'Manga nao encontrada'}, 404)
-  }
-  const chapters = (await c.env.DB.prepare('SELECT * from chapters where manga_id = ? ORDER BY cap DESC').bind(manga.id).all()).results
-  return c.json({ manga, chapters })
 })
 
 export default app
