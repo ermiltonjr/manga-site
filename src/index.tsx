@@ -44,7 +44,7 @@ app.get('/img/*', async (c) => {
       <Layout titulo='Pagina nao encontrada'><h1>Erro 404</h1></Layout>
     , 404)}
   return new Response(obj.body, {
-    headers: { 'Content-Type': 'image/webp' },
+    headers: { 'Content-Type': `${obj.httpMetadata?.contentType}` },
   })
 })
 
