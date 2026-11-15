@@ -37,4 +37,15 @@ app.get('/manga/:slug', async (c) => {
   )
 })
 
+app.get('/img/*', async (c) => {
+  const chave = c.req.path.replace('/img/', '')
+  const obj = await c.env.IMAGES.get(chave)
+  if (!obj){ return c.html(
+      <Layout titulo='Pagina nao encontrada'><h1>Erro 404</h1></Layout>
+    , 404)}
+  return new Response(obj.body, {
+    headers: { 'Content-Type': 'image/webp' },
+  })
+})
+
 export default app

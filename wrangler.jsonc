@@ -9,6 +9,12 @@
 			"database_name": "manga-db",
 			"database_id": "e2515d28-320a-4a7a-a8d9-68ea5f06fbbe"
 		}
+	],
+	"r2_buckets": [
+	   {
+	     "binding": "IMAGES",
+	     "bucket_name": "manga-images"
+	   }
 	]
 	// "compatibility_flags": [
 	//   "nodejs_compat"
@@ -20,12 +26,6 @@
 	//   {
 	//     "binding": "MY_KV_NAMESPACE",
 	//     "id": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-	//   }
-	// ],
-	// "r2_buckets": [
-	//   {
-	//     "binding": "MY_BUCKET",
-	//     "bucket_name": "my-bucket"
 	//   }
 	// ],
 	// "d1_databases": [
