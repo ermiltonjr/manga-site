@@ -13,6 +13,14 @@ const Layout = (props: { titulo: string; children: any }) => (
   </html>
 )
 
+app.use('/api/admin/*', async (c, next) => {
+  const token = c.req.header('Authorization')
+  if (token !== `Bearer ${c.env.ADMIN_TOKEN}` || token === ''){
+    return c.json({ erro: 'Token invalido'}, 401)
+  }
+  await next()
+})
+
 app.get('/', async (c) => {
   const mangas = (await c.env.DB.prepare('SELECT * FROM mangas ORDER by title').all<{ slug: string; title: string}>()).results
   return c.html(<Layout titulo="Mangas">
@@ -46,6 +54,25 @@ app.get('/img/*', async (c) => {
   return new Response(obj.body, {
     headers: { 'Content-Type': obj.httpMetadata?.contentType ?? 'application/octet-stream' },
   })
+})
+
+app.post('/api/admin/mangas', async (c) => {
+  const body = await c.req.json()
+  if (typeof body.slug !== 'string' || typeof body.title !== 'string' || body.slug.trim() === '' || body.title.trim() === ''){
+    return c.json({ erro: 'Algum campo vazio'}, 400)
+  }
+  try{
+    const manga = await c.env.DB.prepare('INSERT INTO mangas (slug, title) VALUES (?, ?) RETURNING *').bind(body.slug, body.title).first()
+    return c.json({msg: 'manga criado com sucesso', manga: manga}, 201)
+  }
+  catch (error: any){
+    const mensagemErro = error?.message || ""
+    if (mensagemErro.includes('SQLITE_CONSTRAINT_UNIQUE')){
+      return c.json({erro: 'Ja existe um manga com esse nome cadastrado'}, 409)
+    }
+
+    return c.json({msg: 'nao foi possivel enviar o manga'}, 500)
+  }
 })
 
 export default app
