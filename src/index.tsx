@@ -15,7 +15,7 @@ const Layout = (props: { titulo: string; children: any }) => (
 
 app.use('/api/admin/*', async (c, next) => {
   const token = c.req.header('Authorization')
-  if (token !== `Bearer ${c.env.ADMIN_TOKEN}` || token === ''){
+  if (token !== `Bearer ${c.env.ADMIN_TOKEN}` || !c.env.ADMIN_TOKEN){
     return c.json({ erro: 'Token invalido'}, 401)
   }
   await next()
