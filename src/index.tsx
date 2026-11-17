@@ -77,15 +77,15 @@ app.post('/api/admin/mangas', async (c) => {
 
 app.post('/api/admin/chapters', async (c) => {
   const body = await c.req.json()
-  if (typeof body.slug !== 'string' || body.slug.trim() === '' || !Number.isFinite(body.cap) || (!!body.title && typeof body.title !== 'string')){
+  if (typeof body.slug !== 'string' || body.slug.trim() === '' || !Number.isFinite(body.cap) || (body.title != null && typeof body.title !== 'string')){
     return c.json({ erro: 'Algum campo vazio ou com tipo errado'}, 400)
   }
-  const manga = await c.env.DB.prepare('SELECT * FROM mangas where slug = ?').bind(body.slug).first()
+  const manga = await c.env.DB.prepare('SELECT * FROM mangas where slug = ?').bind(body.slug).first<{ id: number}>()
   if (!manga){
     return c.json({ erro: 'O manga nao existe'}, 404)
   }
   try {
-    const cap = await c.env.DB.prepare('INSERT INTO chapters (manga_id, cap, title) VALUES (?, ?, ?) RETURNING *').bind(manga.id, body.cap, body.title?.trim() || null).first<{ id: number}>()
+    const cap = await c.env.DB.prepare('INSERT INTO chapters (manga_id, cap, title) VALUES (?, ?, ?) RETURNING *').bind(manga.id, body.cap, body.title?.trim() || null).first()
     return c.json({ msg: 'capitulo criado com sucesso', cap: cap}, 201)
   }
   catch (error: any){

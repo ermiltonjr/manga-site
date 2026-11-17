@@ -49,7 +49,7 @@ console.log(cap1.status, await cap1.json())
 const cap2 = await fetch('http://localhost:8787/api/admin/chapters', {
     method: 'POST',
     headers: { 'Content-Type' : 'application/json', 'Authorization' : `Bearer ${Bun.env.ADMIN_TOKEN}`},
-    body: JSON.stringify({slug: 'teste', cap: 3, title: 'O retorno'}),
+    body: JSON.stringify({slug: 'teste', cap: 5, title: 0}),
 })
 
 console.log(cap2.status, await cap2.json())
@@ -57,7 +57,7 @@ console.log(cap2.status, await cap2.json())
 const cap3 = await fetch('http://localhost:8787/api/admin/chapters', {
     method: 'POST',
     headers: { 'Content-Type' : 'application/json', 'Authorization' : `Bearer ${Bun.env.ADMIN_TOKEN}`},
-    body: JSON.stringify({slug: 'nao-existe', cap: 3, title: 'O retorno'}),
+    body: JSON.stringify({slug: 'nao-existe', cap: 5, title: 0}),
 })
 
 console.log(cap3.status, await cap3.json())
